@@ -1,0 +1,13 @@
+# Update object yg diupdate saja yg dikirim
+### Save products 3
+POST http://localhost:9200/products/_update/5
+Content-Type: application/json
+
+{
+    "doc": {
+        "price": 30000000
+    }
+}
+
+### Get products 5
+GET http://localhost:9200/products/_doc/5

@@ -1,0 +1,68 @@
+### Insert data customer
+POST http://localhost:9200/customers/_create/lukman
+Content-Type: application/json
+
+{
+    "name": "Lukman Sanjaya",
+    "register_at": "2023-10-02 00:00:00"
+}
+
+### Insert data customer failed
+POST http://localhost:9200/customers/_create/lukmans
+Content-Type: application/json
+
+{
+    "name": "Lukman Sanjaya",
+    "register_at": "Ini datanya salah"
+}
+
+### Get mapping customers
+GET http://localhost:9200/customers/_mapping
+
+
+### Insert data customer
+POST http://localhost:9200/products/_create/1
+Content-Type: application/json
+
+{
+    "name": "Indomie Ayam Bawang",
+    "price": "2000"
+}
+
+### Insert data customer 2
+POST http://localhost:9200/products/_create/2
+Content-Type: application/json
+
+{
+    "name": "Mie Sedap Soto",
+    "price": 2000
+}
+
+### Get mapping products
+GET http://localhost:9200/products/_mapping
+
+
+### Insert data orders
+POST http://localhost:9200/orders/_create/1
+Content-Type: application/json
+
+{
+    "order_date": "2023-10-02 10:35:00",
+    "customer_id": "lukman",
+    "total": 8000,
+    "items": [
+        {
+            "product_id": 1,
+            "price": 2000,
+            "quantity": 2
+        },
+        {
+            "product_id": 2,
+            "price": 2000,
+            "quantity": 2
+        }
+    ]
+}
+
+### Get mapping orders
+GET http://localhost:9200/orders/_mapping

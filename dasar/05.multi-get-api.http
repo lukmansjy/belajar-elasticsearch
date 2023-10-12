@@ -1,0 +1,27 @@
+### Multiget products 1 & 2
+POST http://localhost:9200/products/_mget
+Content-Type: application/json
+
+{
+    "ids": [
+        "1",
+        "2"
+    ]
+}
+
+### Multiget orders 1 and customers lukman
+POST http://localhost:9200/_mget
+Content-Type: application/json
+
+{
+    "docs": [
+        {
+            "_id": "1",
+            "_index": "orders"
+        },
+        {
+            "_id": "lukman",
+            "_index": "customers"
+        }
+    ]
+}

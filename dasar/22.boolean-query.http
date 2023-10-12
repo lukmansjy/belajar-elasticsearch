@@ -1,0 +1,238 @@
+# boolean query untuk pencarian beberapa field
+
+# boolean query - must (ada score relevan hasil pencarian)
+### select * from customer where hobbies = 'gaming' and banks.name = 'bca' limit 15 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 15,
+    "from": 0
+}
+
+### select * from customer where hobbies = 'gaming' and banks.name = 'bca digital' limit 15 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "match": {
+                        "banks.name": {
+                            "query": "bca digital",
+                            "operator": "AND"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 15,
+    "from": 0
+}
+
+# boolean query - filter (filter mirip dgn must tapi tidak kontribusi ke score, dan bisanya untuk manual sort)
+
+### select * from customer where hobbies = 'gaming' and banks.name = 'bca' limit 15 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 15,
+    "from": 0
+}
+
+### select * from customer where hobbies = 'gaming' and banks.name = 'bca digital' limit 15 offset 0 order by username desc
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "filter": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "match": {
+                        "banks.name": {
+                            "query": "bca digital",
+                            "operator": "AND"
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "size": 15,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+# boolean query - must not
+### select * from customer where hobbies != 'gaming' and banks.name != 'bca' limit 15 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must_not": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 15,
+    "from": 0
+}
+
+# boolean query - should
+### select * from customer where banks.name = 'bca' or banks.name = 'bni' limit 15 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bni"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 15,
+    "from": 0
+}
+
+# Note: semua boolean query diatas bisa digabungkan
+
+### select * from customer where hobbies='gaming' limit 10 offset 315
+# contoh dibawah minimal should_match menjadi 0 (jadinya should tidak wajib ketemu)
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bni"
+                    }
+                }
+            ]
+        }
+    },
+    "size": 10,
+    "from": 315
+}
+
+### select * from customer where hobbies='ganing' and (banks.name = 'bca' or banks.name = 'bni') limit 10 offset 0
+# contoh dibawah minimal should_match menjadi 1 (jadinya should wajib ketemu minimal 1)
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": "gaming"
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bni"
+                    }
+                }
+            ],
+            "minimum_should_match": 1
+        }
+    },
+    "size": 10,
+    "from": 0
+}

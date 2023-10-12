@@ -1,0 +1,74 @@
+# Match query sebenarnya sama dengan term query, yg membedakan match query menggunakan text analysis yg sama dengan atribut yg ducari.
+# Maka dari itu type data text cocok menggunakan macth query, karena secara otomatis menggunakan text analysis yg sama
+
+### select * from customer where banks.name = 'BCA' limit 10 offset 0 order by username desc
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match": {
+            "banks.name": "BCA"
+        }
+    },
+    "size": 10,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+# kenapa BCA Digital ikut keluar, krn di type data text di lucin document nya disimpat di pecah-pecah
+# contohnya:
+# banks.name = "BCA" => banks.name = ["bca"]
+# banks.name = "BCA Digital" => banks.name = ["bca", "digital"]
+# dr contoh diatas akan disimpan menjadi lower case, dan saat mencari menggunakan match query value yg dicari akau di lowercase juga
+
+### select * from customer where banks.name = 'bca' or banks.name = 'digital' limit 10 offset 0 order by username desc
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match": {
+            "banks.name": "BCA Digital"
+        }
+    },
+    "size": 10,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+### select * from customer where banks.name = 'bca' and banks.name = 'digital' limit 10 offset 0 order by username desc
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "match": {
+            "banks.name": {
+                "query": "BCA DIGITAL",
+                "operator": "AND"
+            }
+        }
+    },
+    "size": 10,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}

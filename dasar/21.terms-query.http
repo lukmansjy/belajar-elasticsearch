@@ -1,0 +1,38 @@
+# terms query cara kerjanya mirip term query. terms query cocoknya untuk yg tipe datanya bukan text
+# dan di query mysql seperti IN
+
+### select * from customer where username in ('username1', 'username2', 'username3') limit 10 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "terms": {
+            "username": [
+                "username1",
+                "username2",
+                "username3"
+            ]
+        }
+    },
+    "size": 10,
+    "from": 0
+}
+
+### select * from customer where banks.name in ('BCA', 'BTN', 'BNI') limit 10 offset 0
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "terms": {
+            "banks.name": [
+                "bca",
+                "btn",
+                "bni"
+            ]
+        }
+    },
+    "size": 10,
+    "from": 0
+}

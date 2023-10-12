@@ -1,0 +1,44 @@
+# term query tidak cocok jika menggunakan type data text, dan lebih cocok menggunakan match query
+
+### search customer (select * from customer where gender = 'Female' limit 10 offset 0 order by username desc)
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "term": {
+            "gender": "Female"
+        }
+    },
+    "size": 10,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}
+
+### select * from customer where banks.name = 'BCA' limit 10 offset 0 order by username desc
+# search BCA tidak dapat result karena type data text, untuk lebih jelasnya di poin match query
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "term": {
+            "banks.name": "BCA"
+        }
+    },
+    "size": 10,
+    "from": 0,
+    "sort": [
+        {
+            "username": {
+                "order": "desc"
+            }
+        }
+    ]
+}

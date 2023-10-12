@@ -1,0 +1,128 @@
+# meningkatkan/menurunkan (pioritas) bobot score hasil query
+
+### select * from customer where banks.name = 'bca' or banks.name = 'bni'
+# boost score bni
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": {
+                            "value": "bni",
+                            "boost": 2
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
+
+### select * from customer where banks.name = 'bca' or banks.name = 'bni'
+# boost score bni & menurunkan bca
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "term": {
+                        "banks.name": {
+                            "value": "bca",
+                            "boost": 0
+                        }
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": {
+                            "value": "bni",
+                            "boost": 2
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
+
+# melihat score yg dihitung dr query yg dikirim
+
+### explain boost score 2 customer username126
+POST http://localhost:9200/customer/_explain/username126
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": {
+                            "value": "gaming",
+                            "boost": 2
+                        }
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bni"
+                    }
+                }
+            ],
+            "minimum_should_match": 1
+        }
+    }
+}
+
+### explain boost score 0 customer username126
+POST http://localhost:9200/customer/_explain/username126
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "term": {
+                        "hobbies": {
+                            "value": "gaming",
+                            "boost": 0
+                        }
+                    }
+                }
+            ],
+            "should": [
+                {
+                    "term": {
+                        "banks.name": "bca"
+                    }
+                },
+                {
+                    "term": {
+                        "banks.name": "bni"
+                    }
+                }
+            ],
+            "minimum_should_match": 1
+        }
+    }
+}

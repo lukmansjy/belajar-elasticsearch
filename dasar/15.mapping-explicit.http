@@ -1,0 +1,76 @@
+# mapping explicit (mapping manual) lebih direkomendasikan daripada yg dynamic mapping
+
+### Create index customers_v2
+PUT http://localhost:9200/customers_v2
+
+### Update customers_v2 mapping date
+PUT http://localhost:9200/customers_v2/_mapping
+Content-Type: application/json
+
+{
+    "numeric_detection": true,
+    "date_detection": true,
+    "dynamic_date_formats": [
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd",
+        "yyyy/MM/dd HH:mm:ss",
+        "yyyy/MM/dd"
+    ],
+    "properties": {
+        "username": {
+            "type": "keyword"
+        },
+        "first_name": {
+            "type": "text"
+        },
+        "last_name": {
+            "type": "text"
+        },
+        "email": {
+            "type": "keyword"
+        },
+        "gender": {
+            "type": "keyword"
+        },
+        "birth_date": {
+            "type": "date",
+            "format": "yyyy-MM-dd"
+        }
+    }
+}
+
+# note: type data keyword bisa diurutkan, kalau type data text tidak bisa diurutkan
+
+### Switch alias customer to customers_v2
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "remove": {
+                "index": "customers",
+                "alias": "customer"
+            }
+        },
+        {
+            "add": {
+                "index": "customers_v2",
+                "alias": "customer"
+            }
+        }
+    ]
+}
+
+### Get all aliases
+GET http://localhost:9200/_aliases
+
+### Search customer
+POST http://localhost:9200/customer/_search
+
+### Bulk insert customer
+POST http://localhost:9200/_bulk
+Content-Type: application/json
+
+< data/customers.json
+

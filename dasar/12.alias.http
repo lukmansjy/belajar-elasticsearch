@@ -1,0 +1,76 @@
+# membuat alias index
+
+### Create order alias
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "add": {
+                "index": "orders",
+                "alias": "order"
+            }
+        }
+    ]
+}
+
+### Create customer alias
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "add": {
+                "index": "customers",
+                "alias": "customer"
+            }
+        }
+    ]
+}
+
+### Remove alias order
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "remove": {
+                "index": "orders",
+                "alias": "order"
+            }
+        }
+    ]
+}
+
+### Create alias order and customer
+POST http://localhost:9200/_aliases
+Content-Type: application/json
+
+{
+    "actions": [
+        {
+            "add": {
+                "index": "customers",
+                "alias": "customer"
+            }
+        },
+        {
+            "add": {
+                "index": "orders",
+                "alias": "order"
+            }
+        }
+    ]
+}
+
+### Get alias
+GET http://localhost:9200/_aliases
+
+### Get customer with alias
+GET http://localhost:9200/customer/_search
+
+### Get order with alias
+GET http://localhost:9200/order/_search

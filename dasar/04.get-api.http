@@ -1,0 +1,18 @@
+### Get customer lukman
+GET http://localhost:9200/customers/_doc/lukman
+
+### Get customer notfound
+GET http://localhost:9200/customers/_doc/salah
+
+### Get source customer lukman (get source untuk mendapatkan data tanpa metadata)
+GET http://localhost:9200/customers/_source/lukman
+
+### Get source customer notfound
+GET http://localhost:9200/customers/_source/salah
+
+
+### Check customer lukman exist
+HEAD http://localhost:9200/customers/_doc/lukman
+
+### Check customer notfound
+HEAD http://localhost:9200/customers/_doc/salah

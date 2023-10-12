@@ -1,0 +1,14 @@
+### Search products
+POST http://localhost:9200/products/_search
+
+### Search products page 1
+POST http://localhost:9200/products/_search?size=1&from=0
+
+### Search products page 2
+POST http://localhost:9200/products/_search?size=1&from=1
+
+### Search products sort by price
+POST http://localhost:9200/products/_search?sort=price:asc
+
+### Search products sort by name
+# POST http://localhost:9200/products/_search?sort=name:asc
