@@ -1,0 +1,90 @@
+# untuk data yg key nya dinamis (ditentukan oleh user)
+
+### Update mapping customer
+PUT http://localhost:9200/customer/_mapping
+Content-Type: application/json
+
+{
+    "properties": {
+        "labels": {
+            "type": "flattened"
+        }
+    }
+}
+
+### Get customer mapping
+GET http://localhost:9200/customer/_mapping
+
+### update document customer username1
+POST http://localhost:9200/customer/_update/username1
+Content-Type: application/json
+
+{
+    "doc": {
+        "labels": {
+            "priority": "vip",
+            "discount": "10% discount",
+            "complaint": "always complaint"
+        }
+    }
+}
+
+# data diatas akan disimpan di lucene document menjadi seperti ini
+# labels: ["vip", "10% discount", "always complaint"]
+
+### Get document customer username1
+GET http://localhost:9200/customer/_doc/username1
+Content-Type: application/json
+
+### update document customer username2
+POST http://localhost:9200/customer/_update/username2
+Content-Type: application/json
+
+{
+    "doc": {
+        "labels": {
+            "priority": "regular",
+            "verified": "unverified",
+            "buy": "never buy"
+        }
+    }
+}
+
+### Get document customer username2
+GET http://localhost:9200/customer/_doc/username2
+Content-Type: application/json
+
+### search customer in flattened field
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "term": {
+            "labels": "vip"
+        }
+    }
+}
+
+### search vip and regular customer
+POST http://localhost:9200/customer/_search
+Content-Type: application/json
+
+{
+    "query": {
+        "bool": {
+            "should": [
+                {
+                    "term": {
+                        "labels.priority": "vip"
+                    }
+                },
+                {
+                    "term": {
+                        "labels.priority": "regular"
+                    }
+                }
+            ]
+        }
+    }
+}

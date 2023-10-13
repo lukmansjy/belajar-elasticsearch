@@ -22,7 +22,7 @@ Content-Type: application/json
     ]
 }
 
-# kenapa BCA Digital ikut keluar, krn di type data text di lucin document nya disimpat di pecah-pecah
+# kenapa BCA Digital ikut keluar, krn di type data text di lucene document nya disimpat di pecah-pecah
 # contohnya:
 # banks.name = "BCA" => banks.name = ["bca"]
 # banks.name = "BCA Digital" => banks.name = ["bca", "digital"]
